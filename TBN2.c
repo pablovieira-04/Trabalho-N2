@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +31,7 @@ void inserirContato(ListaContatos* lista, const char* nome, const char* telefone
     if (lista->cauda != NULL) {
         lista->cauda->proximo = novoContato;
     } else {
-        lista->cabeca = novoContato; 
+        lista->cabeca = novoContato;
     }
 
     lista->cauda = novoContato;
@@ -48,7 +47,7 @@ void removerContato(ListaContatos* lista, Contato* contato) {
     if (contato->proximo != NULL) {
         contato->proximo->anterior = contato->anterior;
     } else {
-        lista->cauda = contato->anterior; 
+        lista->cauda = contato->anterior;
     }
 
     free(contato);
@@ -62,15 +61,30 @@ Contato* buscarContato(ListaContatos* lista, const char* nome) {
         }
         atual = atual->proximo;
     }
-    return NULL; 
+    return NULL;
 }
 
 void imprimirContatos(ListaContatos* lista) {
     Contato* atual = lista->cabeca;
+    if (atual == NULL) {
+        printf("A lista de contatos está vazia.\n");
+        return;
+    }
+
     while (atual != NULL) {
         printf("Nome: %s, Telefone: %s\n", atual->nome, atual->telefone);
         atual = atual->proximo;
     }
+}
+
+void liberarLista(ListaContatos* lista) {
+    Contato* atual = lista->cabeca;
+    while (atual != NULL) {
+        Contato* temp = atual;
+        atual = atual->proximo;
+        free(temp);
+    }
+    free(lista);
 }
 
 int main() {
@@ -81,34 +95,75 @@ int main() {
     inserirContato(meusContatos, "Alan", "(88) 99616-8922");
     inserirContato(meusContatos, "Fernanda", "(88) 99452-7427");
 
+    int opcao;
     char nome[100], telefone[15];
-    for (int i = 0; i < 5; i++) {
-        printf("Digite o nome da pessoa %d: ", i + 1);
-        scanf("%99s", nome); 
-        printf("Digite o telefone da pessoa %d: ", i + 1);
-        scanf("%14s", telefone); 
-        inserirContato(meusContatos, nome, telefone);
-    }
 
-    printf("\nLista de Contatos:\n");
-    imprimirContatos(meusContatos);
+    do {
+        printf("\nMenu:\n");
+        printf("1. Adicionar contato\n");
+        printf("2. Remover contato\n");
+        printf("3. Buscar contato\n");
+        printf("4. Listar contatos\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
 
-    printf("\nBuscando contato 'Mateus':\n");
-    Contato* encontrado = buscarContato(meusContatos, "Mateus");
-    if (encontrado) {
-        printf("Encontrado: Nome: %s, Telefone: %s\n", encontrado->nome, encontrado->telefone);
-    }
+        switch (opcao) {
+            case 1:
+                printf("Digite o nome: ");
+                scanf("%99s", nome);
+                printf("Digite o telefone: ");
+                scanf("%14s", telefone);
+                inserirContato(meusContatos, nome, telefone);
+                printf("Contato adicionado com sucesso!\n");
+                printf("Lista de Contatos Atualizada:\n");
+                imprimirContatos(meusContatos);
+                break;
 
-    printf("\nRemovendo contato 'Pablo'.\n");
-    removerContato(meusContatos, buscarContato(meusContatos, "Pablo"));
+            case 2:
+                printf("Digite o nome do contato a ser removido: ");
+                scanf("%99s", nome);
+                Contato* contatoRemover = buscarContato(meusContatos, nome);
+                if (contatoRemover) {
+                    removerContato(meusContatos, contatoRemover);
+                    printf("Contato removido com sucesso!\n");
+                } else {
+                    printf("Contato não encontrado.\n");
+                }
+                break;
 
-    printf("\nLista de Contatos após remoção:\n");
-    imprimirContatos(meusContatos);
+            case 3:
+                printf("Digite o nome do contato a ser buscado: ");
+                scanf("%99s", nome);
+                Contato* encontrado = buscarContato(meusContatos, nome);
+                if (encontrado) {
+                    printf("Encontrado: Nome: %s, Telefone: %s\n", encontrado->nome, encontrado->telefone);
+                } else {
+                    printf("Contato não encontrado.\n");
+                }
+                break;
 
-    while (meusContatos->cabeca != NULL) {
-        removerContato(meusContatos, meusContatos->cabeca);
-    }
-    free(meusContatos);
+            case 4:
+                printf("\nLista de Contatos:\n");
+                imprimirContatos(meusContatos);
+                break;
 
+            case 0:
+                printf("Saindo do programa.\n");
+                break;
+
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+
+        if (opcao != 0) {
+            printf("Pressione Enter para continuar...");
+            while (getchar() != '\n');
+            getchar();
+        }
+
+    } while (opcao != 0);
+
+    liberarLista(meusContatos);
     return 0;
 }
