@@ -77,6 +77,14 @@ void imprimirContatos(ListaContatos* lista) {
     }
 }
 
+void limparTela() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
 void liberarLista(ListaContatos* lista) {
     Contato* atual = lista->cabeca;
     while (atual != NULL) {
@@ -99,13 +107,14 @@ int main() {
     char nome[100], telefone[15];
 
     do {
-        printf("\nMenu:\n");
+        limparTela(); // Limpa a tela antes de mostrar o menu
+        printf("Menu:\n");
         printf("1. Adicionar contato\n");
         printf("2. Remover contato\n");
         printf("3. Buscar contato\n");
         printf("4. Listar contatos\n");
         printf("0. Sair\n");
-        printf("Escolha uma opção: ");
+        printf("\nEscolha uma opção: ");
         scanf("%d", &opcao);
 
         switch (opcao) {
@@ -116,7 +125,7 @@ int main() {
                 scanf("%14s", telefone);
                 inserirContato(meusContatos, nome, telefone);
                 printf("Contato adicionado com sucesso!\n");
-                printf("Lista de Contatos Atualizada:\n");
+                printf("\nLista de Contatos Atualizada:\n");
                 imprimirContatos(meusContatos);
                 break;
 
@@ -137,7 +146,7 @@ int main() {
                 scanf("%99s", nome);
                 Contato* encontrado = buscarContato(meusContatos, nome);
                 if (encontrado) {
-                    printf("Encontrado: Nome: %s, Telefone: %s\n", encontrado->nome, encontrado->telefone);
+                    printf("\nEncontrado: Nome: %s, Telefone: %s\n", encontrado->nome, encontrado->telefone);
                 } else {
                     printf("Contato não encontrado.\n");
                 }
@@ -157,9 +166,9 @@ int main() {
         }
 
         if (opcao != 0) {
-            printf("Pressione Enter para continuar...");
-            while (getchar() != '\n');
-            getchar();
+            printf("\nPressione Enter para continuar...");
+            while (getchar() != '\n'); // Limpa o buffer
+            getchar(); // Espera pelo Enter
         }
 
     } while (opcao != 0);
