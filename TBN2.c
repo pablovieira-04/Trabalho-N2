@@ -107,7 +107,7 @@ int main() {
     char nome[100], telefone[15];
 
     do {
-        limparTela(); // Limpa a tela antes de mostrar o menu
+        limparTela(); // Limpar a tela antes de mostrar o menu
         printf("Menu:\n");
         printf("1. Adicionar contato\n");
         printf("2. Remover contato\n");
@@ -167,8 +167,8 @@ int main() {
 
         if (opcao != 0) {
             printf("\nPressione Enter para continuar...");
-            while (getchar() != '\n'); // Limpa o buffer
-            getchar(); // Espera pelo Enter
+            while (getchar() != '\n');
+            getchar();
         }
 
     } while (opcao != 0);
